@@ -14,7 +14,6 @@ interface TaskProps {
 };
 
 const Task: FC<TaskProps> = ({
-  key,
   task,
 }) => {
   return (
