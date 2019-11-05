@@ -51,10 +51,6 @@ const App = () => {
     updateData(newState);
   }
 
-  const onDragEnd = (result: any) => {
-    // TODO: re-order our column
-  }
-
   return (
     <DragDropContext onDragEnd={ onDragEnd }>
       {
