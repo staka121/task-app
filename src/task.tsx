@@ -11,7 +11,7 @@ const Container = styled.div<ContainerProps>`
   border-radius: 2px;
   padding: 8px;
   margin-bottom: 8px;
-  background-color: ${ props => ( props.isDragging ? 'LightCyan' : 'white' ) };
+  background-color: ${ props => ( props.isDragging ? 'LightCyan' : 'White' ) };
 `;
 
 interface TaskProps {
