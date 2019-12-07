@@ -12,6 +12,8 @@ const Container = styled.div<ContainerProps>`
   padding: 8px;
   margin-bottom: 8px;
   background-color: ${ props => ( props.isDragging ? 'LightCyan' : 'White' ) };
+
+  display: flex;
 `;
 
 interface TaskProps {
@@ -19,6 +21,15 @@ interface TaskProps {
   task: any,
   index: number,
 };
+
+// drag handle
+const Handle = styled.div`
+  width: 20px;
+  height: 20px;
+  background-color: orange;
+  border-radius: 4px;
+  margin-right: 8px;
+`;
 
 const Task: FC<TaskProps> = ({
   task,
@@ -31,8 +42,8 @@ const Task: FC<TaskProps> = ({
           ref={ provided.innerRef }
           isDragging={ snapshot.isDragging }
           { ...provided.draggableProps }
-          { ...provided.dragHandleProps }
         >
+          <Handle { ...provided.dragHandleProps } />
           { task.content }
         </Container>
       )}
