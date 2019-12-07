@@ -4,6 +4,7 @@ import { Draggable, DraggableProvided, DraggableStateSnapshot } from 'react-beau
 
 interface ContainerProps {
   isDragging: boolean;
+  isDragDisabled: boolean;
 }
 
 const Container = styled.div<ContainerProps>`
@@ -11,7 +12,13 @@ const Container = styled.div<ContainerProps>`
   border-radius: 2px;
   padding: 8px;
   margin-bottom: 8px;
-  background-color: ${ props => ( props.isDragging ? 'LightCyan' : 'White' ) };
+  background-color: ${ props => (
+    props.isDragDisabled
+      ? 'LightGrey'
+      : props.isDragging
+        ? 'LightCyan'
+        : 'White'
+  ) };
 
   display: flex;
 `;
@@ -35,12 +42,19 @@ const Task: FC<TaskProps> = ({
   task,
   index,
 }) => {
+  const isDragDisabled = task.id === 'task-1';
+
   return (
-    <Draggable draggableId={ task.id } index={ index }>
+    <Draggable
+      draggableId={ task.id }
+      index={ index }
+      isDragDisabled={ isDragDisabled }
+    >
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
         <Container
           ref={ provided.innerRef }
           isDragging={ snapshot.isDragging }
+          isDragDisabled={ isDragDisabled }
           { ...provided.draggableProps }
         >
           <Handle { ...provided.dragHandleProps } />
