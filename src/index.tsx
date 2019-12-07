@@ -64,28 +64,33 @@ const App = () => {
       return;
     }
 
-    const column = data.columns[source.droppableId];
-    const newTaskIds = [...column.taskIds];
+    const startColumn = data.columns[source.droppableId];
+    const finishColumn = data.columns[destination.droppableId];
 
-    // remove item "source" position and insert "destination" position
-    // @note draggableId is dragging item id
-    newTaskIds.splice(source.index, 1);
-    newTaskIds.splice(destination.index, 0, draggableId);
+    // not change column
+    if (startColumn === finishColumn) {
+      const newTaskIds = [...startColumn.taskIds];
 
-    const newColumn = {
-      ...column,
-      taskIds: newTaskIds.flat(),
-    };
+      // remove item "source" position and insert "destination" position
+      // @note draggableId is dragging item id
+      newTaskIds.splice(source.index, 1);
+      newTaskIds.splice(destination.index, 0, draggableId);
 
-    const newState = {
-      ...data,
-      columns: {
-        ...data.columns,
-        [newColumn.id]: newColumn,
-      },
-    };
+      const newColumn = {
+        ...startColumn,
+        taskIds: newTaskIds.flat(),
+      };
 
-    updateData(newState);
+      const newState = {
+        ...data,
+        columns: {
+          ...data.columns,
+          [newColumn.id]: newColumn,
+        },
+      };
+
+      updateData(newState);
+    }
   }
 
   return (
