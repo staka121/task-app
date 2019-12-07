@@ -90,7 +90,36 @@ const App = () => {
       };
 
       updateData(newState);
+      return;
     }
+
+    // Moving from one list to another
+    // remove item "source" position for start column
+    const startTaskIds = [...startColumn.taskIds];
+    startTaskIds.splice(source.index, 1);
+    const newStartColumn = {
+      ...startColumn,
+      taskIds: startTaskIds.flat(),
+    };
+
+    // insrt item "destination" column
+    const finishTaskIds = [...finishColumn.taskIds];
+    finishTaskIds.splice(destination.index, 0, draggableId);
+    const newFinishColumn = {
+      ...finishColumn,
+      taskIds: finishTaskIds.flat(),
+    };
+
+    const newState = {
+      ...data,
+      columns: {
+        ...data.columns,
+        [newStartColumn.id]: newStartColumn,
+        [newFinishColumn.id]: newFinishColumn,
+      },
+    };
+
+    updateData(newState);
   }
 
   return (
