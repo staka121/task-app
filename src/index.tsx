@@ -4,6 +4,11 @@ import '@atlaskit/css-reset';
 import { DragDropContext, DropResult, DragUpdate } from 'react-beautiful-dnd';
 import initialData from './initial-data';
 import Column from './column';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  display: flex;
+`;
 
 const App = () => {
   const [data, updateData] = useState(initialData);
@@ -89,14 +94,16 @@ const App = () => {
       onDragUpdate={ onDragUpdate }
       onDragEnd={ onDragEnd }
     >
-      {
-        data.columnOrder.map((columnId: string) => {
-          const column = data.columns[columnId];
-          const tasks = column.taskIds.map((taskId: string) => data.tasks[taskId]);
+      <Container>
+        {
+          data.columnOrder.map((columnId: string) => {
+            const column = data.columns[columnId];
+            const tasks = column.taskIds.map((taskId: string) => data.tasks[taskId]);
 
-          return <Column key={ column.id } column={ column } tasks={ tasks } />;
-        })
-      }
+            return <Column key={ column.id } column={ column } tasks={ tasks } />;
+          })
+        }
+      </Container>
     </DragDropContext>
   );
 };
