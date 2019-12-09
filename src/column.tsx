@@ -31,16 +31,21 @@ interface ColumnProps {
   key: string,
   column: any,
   tasks: any[],
+  isDropDisabled: boolean,
 };
 
 const Column: FC<ColumnProps> = ({
   column,
   tasks,
+  isDropDisabled,
 }) => {
   return (
     <Container>
       <Title>{ column.title }</Title>
-      <Droppable droppableId={ column.id }>
+      <Droppable
+        droppableId={ column.id }
+        isDropDisabled={ isDropDisabled }
+      >
         {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
           <TaskList
             ref={ provided.innerRef }
