@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import '@atlaskit/css-reset';
-import { DragDropContext, DropResult, DragUpdate } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult, DragUpdate, DragStart } from 'react-beautiful-dnd';
 import initialData from './initial-data';
 import Column from './column';
 import styled from 'styled-components';
@@ -12,8 +12,9 @@ const Container = styled.div`
 
 const App = () => {
   const [data, updateData] = useState(initialData);
+  const [homeIndex, updateHomeIndex] = useState<number>(-1);
 
-  const onDragStart = () => {
+  const onDragStart = (start: DragStart) => {
     /* ***
      * You want to change doc text color, if it be dragging item.
      * Try this code.
@@ -21,6 +22,8 @@ const App = () => {
      * document.body.style.color = 'DarkBlue';
      * document.body.style.transition = 'backgrand-color 0.2s ease'
      */
+
+    updateHomeIndex(data.columnOrder.indexOf(start.source.droppableId));
   };
 
   const onDragUpdate = (update: DragUpdate) => {
@@ -45,6 +48,8 @@ const App = () => {
      * document.body.style.color = 'inherit';
      * document.body.style.backgroundColor = 'inherit';
      */
+
+    updateHomeIndex(-1);
 
     const { destination, source, draggableId } = result;
 
@@ -130,11 +135,14 @@ const App = () => {
     >
       <Container>
         {
-          data.columnOrder.map((columnId: string) => {
+          data.columnOrder.map((columnId: string, index: number) => {
             const column = data.columns[columnId];
             const tasks = column.taskIds.map((taskId: string) => data.tasks[taskId]);
 
-            return <Column key={ column.id } column={ column } tasks={ tasks } />;
+            // don't water-rise
+            const isDropDisabled = index < homeIndex;
+
+            return <Column key={ column.id } column={ column } tasks={ tasks } isDropDisabled={ isDropDisabled }/>;
           })
         }
       </Container>
