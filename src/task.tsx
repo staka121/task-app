@@ -7,7 +7,7 @@ interface ContainerProps {
 }
 
 const Container = styled.div<ContainerProps>`
-  border: 1px solid lightgrey;
+  border: 3px solid lightgrey;
   border-radius: 50%;
   padding: 8px;
   margin-right: 8px;
@@ -17,12 +17,16 @@ const Container = styled.div<ContainerProps>`
       : 'White'
   ) };
 
-
   width: 40px;
   height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  &:focus {
+    outline: none;
+    border-color: red;
+  }
 `;
 
 interface TaskProps {
