@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import styled from 'styled-components';
 import { Droppable, DroppableProvided, DroppableStateSnapshot, Draggable, DraggableProvided } from 'react-beautiful-dnd';
 import Task from './task';
@@ -28,6 +28,20 @@ const TaskList = styled.div<TaskListProps>`
   min-hight: 100px;
 `;
 
+const InnerList: FC<{ tasks: any[] }> = ({
+  tasks,
+}) => {
+  return (
+    <>
+      {
+        tasks.map((task: any, index: number) => (
+          <Task key={ task.id } task={ task } index={ index } />
+        ))
+      }
+    </>
+  );
+};
+
 interface ColumnProps {
   key: string,
   column: any,
@@ -42,6 +56,13 @@ const Column: FC<ColumnProps> = ({
   isDropDisabled,
   index,
 }) => {
+  // Reduce task re-rendering
+  // ref: https://reactjs.org/docs/hooks-faq.html#how-do-i-implement-shouldcomponentupdate
+  const memoizedInnerList = useMemo(
+    () => <InnerList tasks={ tasks }/>,
+    [tasks],
+  );
+
   return (
     <Draggable
       draggableId={ column.id }
@@ -66,9 +87,7 @@ const Column: FC<ColumnProps> = ({
                 isDraggingOver={ snapshot.isDraggingOver }
                 { ...provided.droppableProps }
               >
-                { tasks.map((task: any, index: number) => (
-                  <Task key={ task.id } task={ task } index={ index } />
-                )) }
+                { memoizedInnerList }
                 { provided.placeholder }
               </TaskList>
             )}
