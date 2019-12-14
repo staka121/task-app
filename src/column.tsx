@@ -42,7 +42,7 @@ const InnerList: FC<{ tasks: any[] }> = ({
   );
 };
 
-export interface ColumnProps {
+interface ColumnProps {
   key: string,
   column: any,
   tasks: any[],

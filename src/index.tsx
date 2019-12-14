@@ -5,33 +5,14 @@ import {
   DragDropContext, DropResult, DragUpdate, DragStart, Droppable, DroppableProvided,
 } from 'react-beautiful-dnd';
 import initialData from './initial-data';
-import Column, { ColumnProps } from './column';
+import Column from './column';
 import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
 `;
 
-interface InnerListProps extends Omit<ColumnProps, 'tasks'> { taskMap: any[] };
-const InnerList: FC<InnerListProps> = ({
-  key,
-  column,
-  isDropDisabled,
-  index,
-  taskMap,
-}) => {
-  return (
-    <Column
-      key={ key }
-      column={ column }
-      tasks={ taskMap }
-      isDropDisabled={ isDropDisabled }
-      index={ index }
-    />
-  );
-} 
-
-const App = () => {
+const App: FC = () => {
   const [data, updateData] = useState(initialData);
   const [homeIndex, updateHomeIndex] = useState<number>(-1);
 
@@ -187,10 +168,10 @@ const App = () => {
                 const isDropDisabled = index < homeIndex;
 
                 return (
-                  <InnerList
+                  <Column
                     key={ column.id }
                     column={ column }
-                    taskMap={ tasks }
+                    tasks={ tasks }
                     isDropDisabled={ isDropDisabled }
                     index={ index }
                   />
