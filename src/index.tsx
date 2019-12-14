@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import '@atlaskit/css-reset';
-import { DragDropContext, DropResult, DragUpdate, DragStart } from 'react-beautiful-dnd';
+import {
+  DragDropContext, DropResult, DragUpdate, DragStart, Droppable, DroppableProvided,
+} from 'react-beautiful-dnd';
 import initialData from './initial-data';
 import Column from './column';
 import styled from 'styled-components';
@@ -51,7 +53,7 @@ const App = () => {
 
     updateHomeIndex(-1);
 
-    const { destination, source, draggableId } = result;
+    const { destination, source, draggableId, type } = result;
 
     // drops outside of a list
     if (!destination) {
@@ -66,6 +68,20 @@ const App = () => {
       destination.droppableId === source.droppableId &&
       destination.index === source.index
     ) {
+      return;
+    }
+
+    if (type === 'column') {
+      const newColumnOrder = Array.from(data.columnOrder);
+      newColumnOrder.splice(source.index, 1);
+      newColumnOrder.splice(destination.index, 0, draggableId);
+
+      const newState = {
+        ...data,
+        columnOrder: newColumnOrder,
+      };
+      
+      updateData(newState);
       return;
     }
 
@@ -133,19 +149,39 @@ const App = () => {
       onDragUpdate={ onDragUpdate }
       onDragEnd={ onDragEnd }
     >
-      <Container>
-        {
-          data.columnOrder.map((columnId: string, index: number) => {
-            const column = data.columns[columnId];
-            const tasks = column.taskIds.map((taskId: string) => data.tasks[taskId]);
+      <Droppable
+        droppableId="all-columns"
+        direction="horizontal"
+        type="column"
+      >
+        {(provided: DroppableProvided) => (
+          <Container
+            ref={ provided.innerRef }
+            { ...provided.droppableProps }
+          >
+            {
+              data.columnOrder.map((columnId: string, index: number) => {
+                const column = data.columns[columnId];
+                const tasks = column.taskIds.map((taskId: string) => data.tasks[taskId]);
 
-            // don't water-rise
-            const isDropDisabled = index < homeIndex;
+                // don't water-rise
+                const isDropDisabled = index < homeIndex;
 
-            return <Column key={ column.id } column={ column } tasks={ tasks } isDropDisabled={ isDropDisabled }/>;
-          })
-        }
-      </Container>
+                return (
+                  <Column
+                    key={ column.id }
+                    column={ column }
+                    tasks={ tasks }
+                    isDropDisabled={ isDropDisabled }
+                    index={ index }
+                  />
+                );
+              })
+            }
+            { provided.placeholder }
+          </Container>
+        )}
+      </Droppable>
     </DragDropContext>
   );
 };
