@@ -1,16 +1,35 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import ReactDOM from 'react-dom';
 import '@atlaskit/css-reset';
 import {
   DragDropContext, DropResult, DragUpdate, DragStart, Droppable, DroppableProvided,
 } from 'react-beautiful-dnd';
 import initialData from './initial-data';
-import Column from './column';
+import Column, { ColumnProps } from './column';
 import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
 `;
+
+interface InnerListProps extends Omit<ColumnProps, 'tasks'> { taskMap: any[] };
+const InnerList: FC<InnerListProps> = ({
+  key,
+  column,
+  isDropDisabled,
+  index,
+  taskMap,
+}) => {
+  return (
+    <Column
+      key={ key }
+      column={ column }
+      tasks={ taskMap }
+      isDropDisabled={ isDropDisabled }
+      index={ index }
+    />
+  );
+} 
 
 const App = () => {
   const [data, updateData] = useState(initialData);
@@ -168,10 +187,10 @@ const App = () => {
                 const isDropDisabled = index < homeIndex;
 
                 return (
-                  <Column
+                  <InnerList
                     key={ column.id }
                     column={ column }
-                    tasks={ tasks }
+                    taskMap={ tasks }
                     isDropDisabled={ isDropDisabled }
                     index={ index }
                   />
