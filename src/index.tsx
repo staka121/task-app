@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import '@atlaskit/css-reset';
 import {
@@ -143,6 +143,31 @@ const App: FC = () => {
     updateData(newState);
   }
 
+  const memoizedColumns = useMemo(
+    () => (<>
+      {
+        data.columnOrder.map((columnId: string, index: number) => {
+          const column = data.columns[columnId];
+          const tasks = column.taskIds.map((taskId: string) => data.tasks[taskId]);
+
+          // don't water-rise
+          const isDropDisabled = index < homeIndex;
+
+          return (
+            <Column
+              key={ column.id }
+              column={ column }
+              tasks={ tasks }
+              isDropDisabled={ isDropDisabled }
+              index={ index }
+            />
+          );
+        })
+      }
+    </>),
+    [data.columns, data.tasks, data.columnOrder, homeIndex],
+  );
+
   return (
     <DragDropContext
       onDragStart={ onDragStart }
@@ -159,25 +184,7 @@ const App: FC = () => {
             ref={ provided.innerRef }
             { ...provided.droppableProps }
           >
-            {
-              data.columnOrder.map((columnId: string, index: number) => {
-                const column = data.columns[columnId];
-                const tasks = column.taskIds.map((taskId: string) => data.tasks[taskId]);
-
-                // don't water-rise
-                const isDropDisabled = index < homeIndex;
-
-                return (
-                  <Column
-                    key={ column.id }
-                    column={ column }
-                    tasks={ tasks }
-                    isDropDisabled={ isDropDisabled }
-                    index={ index }
-                  />
-                );
-              })
-            }
+            { memoizedColumns }
             { provided.placeholder }
           </Container>
         )}
