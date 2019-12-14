@@ -22,13 +22,18 @@ const columns: {
     title: 'In progress',
     taskIds: [],
   },
+  'column-3': {
+    id: 'column-3',
+    title: 'Done',
+    taskIds: [],
+  },
 };
 
 const initialData = {
   tasks: tasks,
   columns: columns,
   // Facilitate reordering of the columns
-  columnOrder: ['column-1', 'column-2'],
+  columnOrder: ['column-1', 'column-2', 'column-3'],
 }
 
 export default initialData;
