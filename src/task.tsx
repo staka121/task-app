@@ -5,6 +5,7 @@ import { Draggable, DraggableProvided, DraggableStateSnapshot } from 'react-beau
 interface ContainerProps {
   isDragging: boolean;
   isDragDisabled: boolean;
+  liftInstruction: string;
 }
 
 const Container = styled.div<ContainerProps>`
@@ -56,6 +57,7 @@ const Task: FC<TaskProps> = ({
           isDragging={ snapshot.isDragging }
           isDragDisabled={ isDragDisabled }
           { ...provided.draggableProps }
+          liftInstruction="Prease space bar to lift the task"
         >
           <Handle { ...provided.dragHandleProps } />
           { task.content }

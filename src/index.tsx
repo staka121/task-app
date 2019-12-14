@@ -2,7 +2,7 @@ import React, { FC, useState, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import '@atlaskit/css-reset';
 import {
-  DragDropContext, DropResult, DragUpdate, DragStart, Droppable, DroppableProvided,
+  DragDropContext, DropResult, DragUpdate, DragStart, Droppable, DroppableProvided, ResponderProvided,
 } from 'react-beautiful-dnd';
 import initialData from './initial-data';
 import Column from './column';
@@ -16,7 +16,7 @@ const App: FC = () => {
   const [data, updateData] = useState(initialData);
   const [homeIndex, updateHomeIndex] = useState<number>(-1);
 
-  const onDragStart = (start: DragStart) => {
+  const onDragStart = (start: DragStart, provided: ResponderProvided) => {
     /* ***
      * You want to change doc text color, if it be dragging item.
      * Try this code.
@@ -25,10 +25,11 @@ const App: FC = () => {
      * document.body.style.transition = 'backgrand-color 0.2s ease'
      */
 
+    provided.announce(`You have lifted the task in position ${start.source.index + 1}`);
     updateHomeIndex(data.columnOrder.indexOf(start.source.droppableId));
   };
 
-  const onDragUpdate = (update: DragUpdate) => {
+  const onDragUpdate = (update: DragUpdate, provided: ResponderProvided) => {
     /* ***
      * You want to change doc background color with relation to item position, if it be dragging item.
      * Try this code.
@@ -40,9 +41,13 @@ const App: FC = () => {
      *
      * document.body.style.backgroundColor = `rgba(153, 141, 217, ${ opacity })`
      */
+    const message = update.destination
+      ? `You have lifted the task in position ${update.source.index + 1}`
+      : 'You are currently not over a droppable area';
+    provided.announce(message);
   };
 
-  const onDragEnd = (result: DropResult) => {
+  const onDragEnd = (result: DropResult, provided: ResponderProvided) => {
     /* ***
      * You want to reset changed doc color.
      * Try this code.
@@ -50,6 +55,10 @@ const App: FC = () => {
      * document.body.style.color = 'inherit';
      * document.body.style.backgroundColor = 'inherit';
      */
+    const message = result.destination
+      ? `You have moved the task from position ${result.source.index + 1} to ${result.destination.index + 1}`
+      : `The task has been returned to its starting position of ${result.source.index + 1}`;
+    provided.announce(message);
 
     updateHomeIndex(-1);
 
